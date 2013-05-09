@@ -1,0 +1,4 @@
+<apex:page sidebar="false"  id="pg" contentType="text/html"  tabStyle="ExtFM_Upload__tab" showHeader="true">
+<apex:sectionHeader title="External File Management" help="{!$Resource.CEPXF__ExtFMXfiles}/Help/UploadHelp.html" />
+<apex:iframe src="/apex/ExtFMUploadMain" frameborder="false" height="400px"  scrolling="false"/>
+</apex:page>

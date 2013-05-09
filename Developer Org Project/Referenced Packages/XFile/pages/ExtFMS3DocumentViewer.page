@@ -1,0 +1,9 @@
+<apex:page id="pg" sidebar="false" controller="CEPXF.ExtFMS3DocumentViewerController" showHeader="false">
+    <apex:form id="fm">
+     <font color="red"><apex:pagemessages ></apex:pagemessages></font>
+    <apex:pageBlock id="pgb" tabStyle="ExtFM_Upload__tab">
+        <apex:iframe src="{!url}"  scrolling="true" id="theIframe">
+        </apex:iframe>
+    </apex:pageBlock>
+    </apex:form> 
+</apex:page>

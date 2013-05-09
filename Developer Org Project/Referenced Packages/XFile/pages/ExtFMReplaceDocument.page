@@ -1,0 +1,218 @@
+<apex:page sidebar="false" showHeader="false" id="pg" contentType="text/html" controller="CEPXF.ExtFMUploadController">
+<apex:sectionHeader title="Replace Document" help="" />
+<apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/js/jquery-1.5.1.min.js"/>
+  <apex:outputText escape="false" value="{!"<!DOCTYPE html>"}"/>
+    <html>
+    <head>
+    <style>
+       .noTitle .ui-dialog-titlebar {display:none;}
+        
+        .main{
+            padding-left : 5%;
+            font-weight:bold;
+        }
+        .label{
+            width: 150px;
+        }
+        #replace{
+            padding-left : 5%;
+          
+        }
+     </style>
+     <script>
+       
+        var __sfdcSessionId='{!GETSESSIONID()}';
+        var nsPrefix ='CEPXF__';
+        window.onload = setupPage;
+        var contentType;
+        var url;
+        var etag;
+        function getSfdcInstance() {
+            return location.href.match(/:\/\/(.[^/]+)/)[1].split('.')[1];
+        }
+        function setupPage(){
+          try{
+                etag = '{!JSENCODE($CurrentPage.parameters.etag)}';
+                etag = etag.substring(1, etag.length-1);
+                url = "https://cepxf."+getSfdcInstance()+".visual.force.com/apex/"+nsPrefix+"ExtFMS3DocumentViewer?Id="+etag;
+                if(etag != ''){
+                    document.getElementById("replace").style.display='block';
+                    document.getElementById("maindiv").style.display='none';
+                    document.getElementById("repUrl").innerHTML = url;
+                }
+            }catch(e){
+            }
+        }
+        
+        function updateInterfaceRec(){
+            
+            try{
+                bucket = '{!JSENCODE($CurrentPage.parameters.bucket)}';
+                var id ='{!$CurrentPage.parameters.Id}';
+                var key = '{!JSENCODE($CurrentPage.parameters.key)}';
+                var intface = new sforce.SObject("CEPXF__Interface__c");
+                intface.Id = id;
+                intface.CEPXF__Link__c = url;
+                intface.CEPXF__Amazon_eTag__c = etag;
+                intface.CEPXF__Bucket__c = bucket;
+                intface.CEPXF__Key__c = key;
+                intface.Name = key;
+                var result = sforce.connection.update([intface]);
+            }catch(e){                     
+            }
+            alert('Your file has been Replaced.');
+            window.top.close(); 
+        }
+        function cancel(){
+            window.top.close(); 
+        }
+     </script>
+     <script>
+        function getSFDCdateFormat(dt){
+             var returnDateStr='';
+             try{
+                returnDateStr += dt.getFullYear()+'-';
+                returnDateStr += (dt.getMonth()+1) < 10 ? '0'+(dt.getMonth()+1) : (dt.getMonth()+1);
+                returnDateStr += '-';
+                returnDateStr += dt.getDate() < 10 ? '0'+dt.getDate() : dt.getDate();
+                returnDateStr += 'T';
+                returnDateStr += dt.getHours() < 10 ? '0'+dt.getHours() : dt.getHours();
+                returnDateStr += ':';
+                returnDateStr += dt.getMinutes() < 10 ? '0'+dt.getMinutes() : dt.getMinutes();
+                returnDateStr += ':';
+                returnDateStr += dt.getSeconds() < 10 ? '0'+dt.getSeconds() : dt.getSeconds();
+                returnDateStr += '.000Z';
+             }catch(e){}
+             return returnDateStr;
+         }
+         
+         
+         function getExtension(fileFieldId){
+             var fileField=document.getElementById(fileFieldId).value;
+              if (fileField.indexOf('\\') > -1) {
+              fileField = fileField.substring(fileField.lastIndexOf('\\') + 1, fileField.length);
+              }
+              if (fileField.indexOf('/') > -1) {
+                fileField = fileField.substring(fileField.lastIndexOf('/') + 1, fileField.length);
+              }
+            
+              var extension;
+              if (fileField.indexOf('.') > -1) {
+                extension = fileField.substring(fileField.lastIndexOf('.') + 1, fileField.length);
+              } else {
+                extension = "";
+              }
+              return extension;
+             
+         }
+        function getConntentType(id){
+               var extension = getExtension(id);
+               contentType = "application/octet-stream";
+               if ( extension == "txt" ) {
+                 contentType= "text/plain";
+               } else if ( extension == "htm" || extension == "html" ) {
+                 contentType= "text/html";
+               } else if ( extension == "jpg" || extension == "jpeg" ) {
+                 contentType = "image/jpeg";
+               } else if ( extension == "gif" ) {
+                 contentType = "image/gif";
+               } else if ( extension == "png" ) {
+                 contentType = "image/png";
+               }else if ( extension == "pdf" ) {
+                 contentType = "application/pdf";
+               }
+        }
+        
+       
+        function uploadS3(){
+            showLoader();
+            var val=document.getElementById("file").value;
+            var strlen=val.length;
+            var str='';
+            if(val.search("fakepath") != -1)
+               str=val.substring(12, strlen);
+            else
+               str=val;
+            var fileField = str;
+            var sfdcTime = getSFDCdateFormat(new Date());
+            getConntentType('file');
+            CEPXF.ExtFMUploadController.getAuthorization(str,sfdcTime,contentType, function(result, event){
+                if(event.status){
+                    var temp = result.split(',');
+                    document.getElementById("policy").value = temp[1];
+                    document.getElementById("signature").value =temp[0] ;
+                    document.getElementById("key").value = fileField;
+                    document.getElementById("AWSAccessKeyId").value = temp[2];
+                    document.getElementById("content-type").value = contentType;
+                    document.getElementById("success").value = "https://c."+ getSfdcInstance() +".visual.force.com/apex/"+nsPrefix+"ExtFmReplaceDocument?id={!$CurrentPage.parameters.Id}";
+                    document.getElementById("postform").action="https://s3.amazonaws.com/"+temp[3];
+                    document.getElementById("postform").submit();
+                }
+            }, {escape:true});
+        }
+    
+    </script>
+    <script>
+      
+       function showLoader(){
+           
+            $('#loader').dialog({
+              bgiframe: false,
+              height: 30,
+              width: 50,
+              closeOnEscape: false,
+              modal: true,
+              dialogClass: 'noTitle',
+              resizable: false,
+              open: function(event, ui) {
+               jQuery('.ui-dialog-titlebar-close').hide();          
+               }
+            });
+        }
+    </script>
+    </head>
+        <body>
+            <div class="main" id="maindiv" style="display : block">
+               <form id="postform" action="" method="post"   enctype="multipart/form-data">
+                <table>
+                <br/><br/>
+                <input type="hidden" name="key" id="key" value="" />
+                <input type="hidden" name="acl" id="acl" value="private" />
+                <input type="hidden" name="content-type" id="content-type" value=""  />
+                <input type="hidden" name="AWSAccessKeyId" id="AWSAccessKeyId" value=""  />
+                <input type="hidden" name="policy" id="policy" value="" />
+                <input type="hidden" name="signature" id="signature" value="" />
+                <input type="hidden" id="success" name="success_action_redirect" value="" />
+                <br/>
+                <tr>
+                   <td class="label" align="right"><apex:outputLabel for="file" value=" File To Replace :"/></td>
+                   <td><input name="file" id="file" type="file" /></td>
+                   <td><!--<input name="sButton" value="Upload" type="submit" onclick="showLoader()"/>--></td>
+               </tr>
+             </table>
+                 <div id="loader" style="display : none"><img src="/img/loading.gif"/><font size="1">   Uploading...</font></div>
+             </form>
+             <div style="padding-left:10%; padding-top: 15px"><input name="submit" value="Upload" type="submit" onclick="uploadS3()" /></div>
+             </div>
+             <div id="replace" style="display:none">
+                <div style="font-size:14px;">
+                     <tr>
+                         <td><h3>New Link :</h3></td>
+                         <td><span id="repUrl" style="background : #EBEBE4"></span></td>
+                     </tr>
+                </div>
+                <div style="padding-top:15px; padding-left:200px;" >    
+                     <tr><td><input type="button" value="Replace" onclick="updateInterfaceRec();"/></td>
+                     <td><input type="button" value="Cancel" onclick="cancel();"/></td></tr>
+                </div>     
+             </div>
+        </body>
+    </html>
+    <script src="/soap/ajax/23.0/connection.js"></script>
+    <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.position.js"/>
+     <link rel="stylesheet" href="{!$Resource.ExtFMXfiles}/Jquery/development-bundle/themes/base/jquery.ui.all.css" />
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.core.js"/>
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.widget.js"/>
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.mouse.js"/>
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.dialog.js"/>
+</apex:page>

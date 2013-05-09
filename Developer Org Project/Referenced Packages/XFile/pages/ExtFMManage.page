@@ -1,0 +1,1037 @@
+<apex:page sidebar="false" controller="CEPXF.ExtFMManageController"  id="pg" standardStylesheets="false">
+<head>
+    <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/js/jquery-1.5.1.min.js"/>
+    <script>
+       var __sfdcSessionId='{!GETSESSIONID()}';
+   </script>
+   
+   <style>
+        #butns{padding-top : 15px;padding-bottom :5px;}
+        .linkBtn{
+            float :left;
+            padding-left : 5%;
+            padding-bottom :15px;
+        }        
+        .cmdBtnCls{
+            padding-left:10%;
+            padding-right :10%;
+        }
+        #refsh{
+            float:right;
+            height :8px;
+            width :8px;
+            padding-right:5%;
+            padding-bottom:2%;
+        }
+        .status{
+            float :left;            
+        }        
+        
+        .noTitle .ui-dialog-titlebar {display:none;}
+    </style>
+    <style>
+   .newHeader{
+        background-color: #DCE2E5;
+    }
+    .by-name {
+        width: 270px;
+        position: relative;
+    }
+    .popup-arrow {
+        right: 5px;
+        top: 10px;
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/context-arrow.png')}") 1px -17px no-repeat;
+        display: none;
+        width: 17px;
+        height: 17px;
+        position: absolute;
+        right: 5px;
+        top: 1px;
+        z-index: 10;
+    }
+    .one-item .popup-arrow {
+        
+     }
+
+    .filter-selector-wrapper {
+        float: right;
+    }
+    .filter-selector-container {
+        float: left;
+        position: relative;
+        z-index: 100;
+    }
+    .filter-selector {
+        margin: 5px 0 5px 10px;
+        color: #333;
+        padding: 0 10px;
+        height: 34px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -o-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -khtml-border-radius: 5px;
+        border-radius: 5px;
+        border: 1px solid #BEBEBE;
+        background: #FEFEFE;
+        text-shadow: 0 -1px #FEFEFE;
+        background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#FEFEFE),color-stop(100%,#F1F2F2));
+        background-image: -webkit-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -moz-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -o-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -ms-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: linear-gradient(top,#FEFEFE,#F1F2F2);
+        padding: 0 8px;
+        float: right;
+        font-size: 12px;
+        vertical-align: middle;
+        min-width: 135px;
+    }
+    .Button-selector {
+        margin: 5px 0 5px 10px;
+        color: #333;
+        padding: 0 10px;
+        height: 34px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -o-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -khtml-border-radius: 5px;
+        border-radius: 5px;
+        border: 1px solid #BEBEBE;
+        background: #FEFEFE;
+        text-shadow: 0 -1px #FEFEFE;
+        background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#FEFEFE),color-stop(100%,#F1F2F2));
+        background-image: -webkit-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -moz-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -o-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -ms-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: linear-gradient(top,#FEFEFE,#F1F2F2);
+        padding: 0 8px;
+        float: left;
+        font-size: 12px;
+        vertical-align: middle;
+        min-width: 50px;
+    }
+    .filter-button {
+        margin: 5px 0 5px 10px;
+        color: #333;
+        padding: 0 10px;
+        height: 34px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -o-border-radius: 5px;
+        -ms-border-radius: 5px;
+        -khtml-border-radius: 5px;
+        border-radius: 5px;
+        border: 1px solid #BEBEBE;
+        background: #FEFEFE;
+        text-shadow: 0 -1px #FEFEFE;
+        background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#FEFEFE),color-stop(100%,#F1F2F2));
+        background-image: -webkit-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -moz-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -o-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: -ms-linear-gradient(top,#FEFEFE,#F1F2F2);
+        background-image: linear-gradient(top,#FEFEFE,#F1F2F2);
+        float: left;
+        min-width: 76px;
+    }
+    .filter-x-button {
+        color: #FDFDFD;
+        text-indent: -9999px;
+        float: right;
+        margin-top: 1px;
+        margin-left: 10px;
+        width: 13px;
+        height: 14px;
+        background: url("data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sFGhAINLYiowoAAAAidEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOHqHdDAAAA1ElEQVQoz5WSsZHFIAxEH54fqgIasMugDY9zqybRgNuALnADrkC5LzmY7/uX/I0EWrGrHQK/uK7rNjNKKbg7ACJCSglVJcYYAALAeZ73vu+D+BciQs6ZeZ5DuK7rXtcVd0dEAB4K/SwiHMfBZGaDUGsNZoaIICKYGbXW0IfMjFcpZUi31u5lWUJr7Qbo9bZtAJRSeL37VtUx1B9Q1dF3dya+xNQX6567ja5kZo+0ppTSuOhkVf2wB5BS4hHrf/l/xBpjDDnn0XyHuw9yzpkYYwjffo0f8ZKVFRWwX+YAAAAASUVORK5CYII=") no-repeat top center;
+    }
+    .all-icon {
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/all4.png')}") no-repeat center center;
+        height:15px;
+        width:15px;
+    }
+    .image-icon {
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/image.png')}") no-repeat center center;
+        height:15px;
+        width:15px;
+    }
+    .pdf-icon {
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/filetype_pdf.png')}") no-repeat center center;
+        height:15px;
+        width:15px;
+    }
+    .doc-icon {
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/document.png')}") no-repeat center center;
+        height:15px;
+        width:15px;
+    }
+    .ppt-icon {
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/pptx.png')}") no-repeat center center;
+        height:15px;
+        width:15px;
+    }
+    .selector-icon {
+        min-width: 15px;
+        min-height: 15px;
+        float: left;
+        margin: 8px 5px 0 0;
+    }
+    .selector-text {
+        float: left;
+        margin: 10px 5px;
+    }
+
+    .Button-text{
+        margin: 7px 35px;
+        font-size: 18px;
+        font-weight:bold;
+    }
+    .selector-arrow {
+        float: right;
+        margin-right: 2px;
+        margin-top: 13px;
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/select_arrow.png')}") no-repeat top center;
+        min-width: 8px;
+        min-height: 8px;
+    }
+    .type-selector-menu {
+        min-width: 233px;
+        top: 51px;
+        left: -52px;
+    }
+    .type-selector-menu .menu-top {
+        margin-left: 150px;
+    }
+    .menu {
+        font-size: 12px;
+        background: #1797C0;
+        background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#1797C0),color-stop(100%,#65B8D2));
+        background-image: -webkit-linear-gradient(top,#1797C0,#65B8D2);
+        background-image: -moz-linear-gradient(top,#1797C0,#65B8D2);
+        background-image: -o-linear-gradient(top,#1797C0,#65B8D2);
+        background-image: -ms-linear-gradient(top,#1797C0,#65B8D2);
+        background-image: linear-gradient(top,#1797C0,#65B8D2);
+        border: 1px solid #19507E;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -o-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -khtml-border-radius: 4px;
+        border-radius: 4px;
+        color: white;
+        z-index: 100;
+        position: absolute;
+        display: none;
+        -moz-box-shadow: 0 0 12px rgba(0,0,0,0.6);
+        -webkit-box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+    }
+    .menu-top {
+        background-image: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/menu_top.png')}");
+        background-repeat: no-repeat;
+        margin-top: -11px;
+    }
+    .menu .menu-controls {
+        float: right;
+        padding-right: 4px;
+    }
+    .menu ul li {
+        padding: 12px 15px;
+        border-bottom: 1px solid #2267A4;
+    }
+    .float-right {
+        float: right;
+    }
+    .file-type{
+        float: right;
+    }
+    #a{
+        text-decoration: none;
+    }
+    .menu a {
+        color: white;
+    }
+    .menu-icon {
+        float: left;
+        width: 16px;
+        min-height: 16px;
+        margin-right: 10px;
+    }
+    input[type="checkbox"] {
+        margin: 3px 3px 3px 4px;
+    }
+    ol, ul {
+        list-style: none;
+    }
+    .menu .menu-controls {
+        float: right;
+        padding-right: 4px;
+    }
+    .blue-button {
+        padding: 4px 12px;
+        color: white;
+        border: 1px solid #125080;
+        background: #1797C0;
+        text-align: center;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -o-border-radius: 3px;
+        -ms-border-radius: 3px;
+        -khtml-border-radius: 3px;
+        border-radius: 3px;
+        -moz-box-shadow: inset 0 0 3px 1px #1797C0;
+        -webkit-box-shadow: inset 0 0 3px 1px #1797C0;
+        box-shadow: inset 0 0 3px 1px #1797C0;
+    
+    }
+    .account-selector-menu {
+        min-width: 200px;
+        margin-left: -117px;
+        top: 51px;
+        z-index: 500;
+    }
+    .account-selector-menu .menu-top {
+        margin-left: 190px;
+    }
+    .context-submenu-cont {
+        display: none;
+        padding: 0px !important;
+        width: 140px;
+        border: 3px solid white;
+        left: 160px;
+        top: 15px;
+        border-radius: 10px;
+        position: absolute;
+        z-index: 999;
+        background: #1797C0;
+        box-shadow: 0 5px 8px #D8DADA;
+    }
+    .context-submenu {
+        display: block;
+        width: 140px;
+        margin: 0px;
+        padding: 0px;
+        background:#1797C0 ;
+    }
+    .context-submenu li:hover {
+        color: white;
+        background: url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/active-item-bg.png')}") left bottom repeat-x;
+        text-decoration: none;
+    }
+    .context-submenu li {
+        color: white;
+        list-style-type: none;
+        padding: 0px;
+        margin: 0px;
+        display: block;
+        height: 31px;
+    }
+    .context-submenu li a {
+        display: block;
+        color: #C8C8C8;
+        padding-left: 10px;
+        width: 150px;
+        line-height: 30px !important;
+        height: 30px;
+        border-bottom: 1px solid #565656;
+        text-align: left;
+    }
+    .context-submenu li a:hover {
+        text-decoration: none;
+        color: white;
+    }
+    .order-by {
+        display: block;
+        float: right;
+        width:100%;
+        background: #E8EEF2;
+        height: 24px;
+        line-height: 24px;
+        margin-top: 3px;
+        border-left: 1px solid #ADB3B7;
+        border-right: 1px solid #ADB3B7;
+    }
+    .by-name {
+        width: 450px;
+        position: relative;
+    }
+    .by-date {
+        width: 50px;
+    }
+    .created-date{
+        width: 100px;
+    }
+    .created-by{
+        width: 150px;
+    }
+    .search-area{
+        margin:5px 0 0;padding-bottom:10px;width:100%;float:left;border-bottom:1px solid #dedede;position:relative
+    }
+    .datagrid table { border-collapse: collapse; text-align: left; width: 100%; } 
+    .datagrid {font: normal 12px/150% Arial, Helvetica, sans-serif; background: #fff; overflow: hidden; border: 1px solid #8C8C8C; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+    .datagrid table td, .datagrid table th { padding: 3px 10px; }
+    .datagrid table thead th {background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #CAD0D4), color-stop(1, #B8D5D6) );background:-moz-linear-gradient( center top, #CAD0D4 5%, #B8D5D6 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#CAD0D4', endColorstr='#B8D5D6');background-color:#CAD0D4; color:#555; font-size: 12px;; font-weight: bold; border-left: 1px solid #A3A3A3; } 
+    .datagrid table thead th:first-child { border-bottom: 1px solid #DBDBDB;}
+    .datagrid table tbody td { color: #7D7D7D; border: none;font-size: 12px;font-weight: normal;border-bottom: 1px solid #DBDBDB; }
+    .datagrid table tbody td:first-child {  border-bottom: 1px solid #DBDBDB;}
+    .datagrid table tfoot td div { border-top: 1px solid #8C8C8C;background: #EBEBEB;} 
+    .datagrid table tfoot td { padding: 0; font-size: 12px } .datagrid table tfoot td div{ padding: 2px; }.datagrid table tfoot td ul { margin: 0; padding:0; list-style: none; text-align: right; }.datagrid table tfoot  li { display: inline; }.datagrid table tfoot li a { text-decoration: none; display: inline-block;  padding: 2px 8px; margin: 1px;color: #F5F5F5;border: 1px solid #8C8C8C;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8C8C8C), color-stop(1, #7D7D7D) );background:-moz-linear-gradient( center top, #8C8C8C 5%, #7D7D7D 100% );filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8C8C8C', endColorstr='#7D7D7D');background-color:#8C8C8C; }.datagrid table tfoot ul.active, .datagrid table tfoot ul a:hover { text-decoration: none;border-color: #7D7D7D; color: #F5F5F5; background: none; background-color:#8C8C8C;}
+    .search-area h2{font:18px 'Open Sans',Helvetica,Arial,Tahoma,sans-serif}
+    .search-area:after{content:"";display:block;clear:both}
+    .search-bar-wrapper{overflow-x:hidden;min-width:200px}
+    .search-bar{height:34px;margin-top:5px;padding:0 12px;background:#fff;border:1px solid #bebebe;-moz-border-radius:5px;-webkit-border-radius:5px;-o-border-radius:5px;-ms-border-radius:5px;-khtml-border-radius:5px;border-radius:5px;-moz-box-shadow:inset 0 0 1px 1px #ddd;-webkit-box-shadow:inset 0 0 1px 1px #ddd;box-shadow:inset 0 0 1px 1px #ddd;position:relative;z-index:106}
+    #search-input{border:none;color:#a5a5a5;font:18px 'Open Sans',Helvetica,Arial,Tahoma,sans-serif;margin-top:3px;width:100%;z-index:300}
+    #search-input.selected{color:#000; outline: none;}
+    input, input[type="password"], input[type="search"], isindex {
+        background-color: white;
+        border: 2px inset;
+    }
+    .menu-text{text-decoration:none}
+   
+    </style>
+    
+   
+    <script>
+        $(document).ready(function() {
+            $('body').click(function(){
+                $('#type-selector-menu').hide();
+                $('#account-selector-menu').hide();
+                $('#filetype-selector-menu').hide();
+            });
+            
+            $('#file').click(function(event){
+                $('#account-selector-menu').hide();
+                $('#type-selector-menu').show();
+                $('#filetype-selector-menu').hide();
+                event.stopPropagation();
+            });
+            $('#acc').click(function(event){
+                $('#type-selector-menu').hide();
+                $('#account-selector-menu').show();
+                $('#filetype-selector-menu').hide();
+                event.stopPropagation();
+            });
+            $('#fileType').click(function(event){
+                $('#filetype-selector-menu').show();
+                $('#account-selector-menu').hide();
+                $('#type-selector-menu').hide();
+                event.stopPropagation();
+            });
+            $('input:checkbox[name=filetype]').click(function(){ 
+                Checkbox_to_RadioButton(this); 
+            }); 
+            function Checkbox_to_RadioButton(box){ 
+                $('input:checkbox[name=' + box.name + ']').each(function(){ 
+                    if (this != box) $(this).attr('checked', false); 
+                }); 
+            } 
+        
+        }); 
+  </script>
+  <script>
+        $(document).ready(function(){
+            $('#type-selector-menu').hide();
+            $('#menu').hide();
+            if(!{!isFirstTime}){
+                doSync();
+            } 
+        });
+        
+        function sendLinkToContent(){
+           $('#copytoclip').dialog({
+                bgiframe: false,
+                height: 400,
+                width: 600,
+                closeOnEscape: false,
+                modal: true,
+                resizable: false,
+                open: function(event, ui){
+                    var link= document.getElementById('pg:fm:box').value;
+                    document.getElementById("contifm").src="/apex/ExtFMCopytoClip?link="+link ;
+                }
+            });
+        }
+        function sendLinkToDocument(){
+            window.open("/p/doc/DocumentUploadUi?retURL=/apex/"+nsPrefix+"ExtFMManage&docURL={!JSENCODE(url)}&utype=1&Name={!JSENCODE(fileName)}&DevName={!JSENCODE(fileName)}")
+        }
+        function openWin(){
+            var url = "/apex/ExtFMReplaceDocument?Id="+selectedIntId;
+            myWindow=window.open(url,'popup',"width=500,height=300,resizable=false");
+        } 
+       
+        function showType(){
+            if($('#filetype-selector-menu:visible').length > 0){
+                $('#filetype-selector-menu').hide();
+            }else{
+                $('#filetype-selector-menu').show();
+            }
+        }
+        function showFileType(){
+            if($('#type-selector-menu:visible').length > 0){
+                $('#type-selector-menu').hide();
+            }else{
+                $('#type-selector-menu').show();
+            }
+        }
+        function showAccountType(){
+            if($('#account-selector-menu:visible').length > 0){
+                $('#account-selector-menu').hide();
+            }else{
+                $('#account-selector-menu').show();
+            }
+        }
+        function getFileTypes(){
+            allVal = '';
+            $('input:checked').each(function() {
+                if($(this).val() != 'on')
+                allVal=$(this).val();
+            });
+            if(allVal != ''){
+                if(allVal == 'Unlinked'){
+                    if($("div[id=type-all-icon]").hasClass('selector-icon all-icon')){
+                        $("div[id=anyType]").text("Unlink");
+                        $("div[id=type-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/ed_unlink.gif')}") no-repeat center center');
+                    }
+                }
+                if(allVal == 'Document'){
+                    if($("div[id=type-all-icon]").hasClass('selector-icon all-icon')){
+                        $("div[id=anyType]").text("Document");
+                        $("div[id=type-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/document.png')}") no-repeat center center');
+                    }
+                }
+                if(allVal == 'Content'){
+                    if($("div[id=type-all-icon]").hasClass('selector-icon all-icon')){
+                        $("div[id=anyType]").text("Content");
+                        $("div[id=type-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/content.jpg')}") no-repeat center center');
+                    }
+                }
+                getRecordList(allVal);
+            }
+            else{
+                if($("div[id=type-all-icon]").hasClass('selector-icon all-icon')){
+                    $("div[id=anyType]").text("Any File");
+                    $("div[id=type-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/all4.png')}") no-repeat center center');
+                }
+                getRecordList('All');
+            }
+        }  
+       
+        function getAllfileTypes(){
+            $("div[id=filetype-all]").text('Any Type');
+            $("div[id=filetype-all]").show();
+            $("div[id=filetype-all-icon]").show();
+            $("div[id=filetype-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/all4.png')}") no-repeat center center');
+            $("div[id=filetype-image]").hide();
+            $("div[id=filetype-pdf]").hide();
+            $("div[id=filetype-doc]").hide();
+            $("div[id=filetype-ppt]").hide();
+            $(".file-type").attr('checked', false);
+            document.getElementById('filetypehid').value='All';
+            getRecordList2();
+        }  
+        function getAllfiles(){
+            $("div[id=anyType]").text("Any file");
+            $("div[id=type-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/all4.png')}") no-repeat center center');
+            $(".file-type").attr('checked', false);
+            getRecordList('All');
+        }  
+       
+        function getTypes(){
+            $("div[id=filetype-ppt]").hide();
+            $("div[id=filetype-image]").hide();
+            $("div[id=filetype-pdf]").hide();
+            $("div[id=filetype-doc]").hide();
+            
+            var allVal2 = [];
+            $('input:checked').each(function() {
+                if($(this).val() != 'on')
+                allVal2.push($(this).val());
+            });
+            if(allVal2 != ''){
+                if(allVal2.length == 1){
+                    if(allVal2[0] == 'Image'){
+                        if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                            $("div[id=filetype-all]").show();
+                            $("div[id=filetype-all-icon]").show();
+                            $("div[id=filetype-all]").text("Image");
+                            $("div[id=filetype-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/image.png')}") no-repeat center center');
+                        }
+                    }
+                    if(allVal2[0] == 'Pdf'){
+                        if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                            $("div[id=filetype-all]").show();
+                            $("div[id=filetype-all-icon]").show();
+                            $("div[id=filetype-all]").text("Pdf");
+                            $("div[id=filetype-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/filetype_pdf.png')}") no-repeat center center');
+                        }
+                    }
+                    if(allVal2[0] == 'Text'){
+                        if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                            $("div[id=filetype-all]").show();
+                            $("div[id=filetype-all-icon]").show();
+                            $("div[id=filetype-all]").text("Document");
+                            $("div[id=filetype-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/document.png')}") no-repeat center center');
+                        }
+                    }
+                    if(allVal2[0] == 'ppt'){
+                        if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                            $("div[id=filetype-all]").show();
+                            $("div[id=filetype-all-icon]").show();
+                            $("div[id=filetype-all]").text("PPT");
+                            $("div[id=filetype-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/pptx.png')}") no-repeat center center');
+                        }
+                    }
+                }else{
+                    for(var i=0;i<=allVal2.length;i++){
+                        if(allVal2[i] == 'Image'){
+                            if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                                $("div[id=filetype-all]").hide();
+                                $("div[id=filetype-image]").show();
+                                $("div[id=filetype-all-icon]").hide();
+                            }
+                        }
+                        if(allVal2[i] == 'Pdf'){
+                            if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                                $("div[id=filetype-all]").hide();
+                                $("div[id=filetype-pdf]").show();
+                                $("div[id=filetype-all-icon]").hide();
+                            }
+                        }
+                        if(allVal2[i] == 'Text'){
+                            if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                                $("div[id=filetype-all]").hide();
+                                $("div[id=filetype-doc]").show();
+                                $("div[id=filetype-all-icon]").hide();
+                            }
+                        }
+                        if(allVal2[i] == 'ppt'){
+                            if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                                $("div[id=filetype-all]").hide();
+                                $("div[id=filetype-ppt]").show();
+                                $("div[id=filetype-all-icon]").hide();
+                            }
+                        }
+                    }
+                }
+                document.getElementById('filetypehid').value=allVal2;
+                getRecordList2();
+            }
+            else{
+                if($("div[id=filetype-all-icon]").hasClass('selector-icon all-icon')){
+                    $("div[id=filetype-all]").show();
+                    $("div[id=filetype-all-icon]").show();
+                    $("div[id=filetype-all]").text("Any Type");
+                    $("div[id=filetype-all-icon]").css('background', 'url("{!URLFOR($Resource.CEPXF__ExtFMXfiles, '/img/all4.png')}") no-repeat center center');
+                }
+                document.getElementById('filetypehid').value='All';
+                getRecordList2();
+            }
+        }  
+        function hidepopup(){
+            $('#type-selector-menu').hide();
+            $('#filetype-selector-menu').hide();
+        }
+        function confirmDelete() {
+            var docCon ="\n\n By deleting this, same will be deleted from Document";
+            var doDelete;
+            if('{!JSENCODE(linkManType)}' =='UnLinked')
+                 doDelete = confirm('WARNNING : \n\nAre you sure you want to delete ?');
+            else
+                doDelete = confirm("WARNNING : "+docCon+"\n\nAre you sure you want to delete ?");
+            return doDelete;
+        }
+       
+    
+    </script>
+    </head>
+    <body>
+    
+    <apex:sectionHeader title="Manage Content and Document" help="{!$Resource.CEPXF__ExtFMXfiles}/Help/ManageHelp.html"/>
+     <font color="red"><apex:pagemessages ></apex:pagemessages></font>
+    
+    <div height="100%" width="100%">
+      <div class="search-area" >
+            <div class="filter-area" style="float: right;">
+                <!-- filter selectors -->
+                 <div class="filter-selector-container" id="search">
+                        <a href="#" onclick="searchQuery();" style="text-decoration:none;">
+                            <div id="Search-button" class="Button-selector">
+                                 <div class="Button-text">Search</div>
+                            </div>
+                        </a>
+                 </div>
+                  <div class="filter-selector-container" id="reset" style="display:none;">
+                        <a href="#" onclick="resetSearch();">
+                            <div id="Search-button" class="Button-selector">
+                                 <div class="Button-text">Reset</div>
+                                 
+                            </div>
+                        </a>
+                 </div>
+                <div class="filter-selector-wrapper">
+                <!--<div class="filter-button" style=""><p id="searchdata"></p><a class="filter-x-button" href="#">x</a></div>-->
+                
+                 <div class="filter-selector-container" id="fileType">
+                        <a href="#" onclick="showType();" style="text-decoration:none;">
+                            <div id="type-selector" class="filter-selector"><div class="selector-icon all-icon" id="filetype-all-icon"></div>
+                                 <div class="selector-text" id="filetype-all">All Types</div>
+                                 <div id="filetype-image" class="selector-icon image-icon" style="display:none;"></div>
+                                 <div id="filetype-pdf" class="selector-icon pdf-icon"  style="display:none;"></div>
+                                 <div id="filetype-doc" class="selector-icon doc-icon" style="display:none;"></div>
+                                 <div id="filetype-ppt" class ="selector-icon ppt-icon" style="display:none;"></div>
+                                 <div class="selector-arrow"></div>
+                            </div>
+                        </a>
+                        <div id="filetype-selector-menu" class="menu account-selector-menu" style="display: none; ">
+                            <div class="menu-top">&nbsp;</div>
+                            <ul>
+                                <li><div class="menu-icon all-icon"></div><a href="#"  onclick="getAllfileTypes();" style="text-decoration:none;">Any Type</a></li>
+                                <li><div class="menu-icon"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/image.png" height="15px" width="15px" alt="Image"/>  </div><a class="menu-text">Image</a><input class="file-type" type="checkbox" value="Image"></input></li>
+                                <li><div class="menu-icon"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/filetype_pdf.png" height="15px" width="15px" alt="Pdf"/> </div><a  class="menu-text">Pdf</a><input class="file-type" type="checkbox" value="Pdf"></input></li>
+                                <li><div class="menu-icon"> <apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/document.png" height="15px" width="15px" alt="Document"/> </div><a  class="menu-text">Document</a><input class="file-type" type="checkbox" value="Text"></input></li>
+                                <li><div class="menu-icon"> <apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/pptx.png" height="15px" width="15px" alt="PPT"/> </div><a  class="menu-text">PPT</a><input class="file-type" type="checkbox" value="ppt"></input></li>
+                                <li class="menu-controls"><a href="#" class="blue-button" onclick="getTypes();" style="text-decoration:none;" >Apply</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                   
+                   <div class="filter-selector-container" id="file">
+                        <a href="#" onclick="showFileType();" style="text-decoration:none;">
+                            <div  class="filter-selector"><div class="selector-icon all-icon" id="type-all-icon"></div>
+                            <div class="selector-text" id="anyType">Any File</div>
+                            <div class="selector-arrow"></div>
+                            </div>
+                        </a>
+                        <div id="type-selector-menu" class="menu type-selector-menu" style="display: none; ">
+                            <div class="menu-top">&nbsp;</div>
+                            <ul>
+                            <li><div class="menu-icon all-icon"></div><a href="#" onclick="getAllfiles();" style="text-decoration:none;">Any File</a></li>
+                            <li><div class="menu-icon" ><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/ed_unlink.gif" height="15px" width="15px" alt="Unlink"/>&nbsp;&nbsp;</div><a  class="menu-text">Unlinked</a><input class="file-type" type="checkbox" value="Unlinked" name="filetype" id="Unlink"></input></li>
+                            <li><div class="menu-icon"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/document.png" height="15px" width="15px" alt="Document"/>&nbsp;&nbsp;</div><a  class="menu-text">Document</a><input class="file-type" type="checkbox" value="Document" name="filetype"></input></li>
+                            <li><div class="menu-icon"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/content.jpg" height="15px" width="15px" alt="Content"/>&nbsp;&nbsp;</div><a  class="menu-text">Content</a><input class="file-type" type="checkbox" value="Content" name="filetype"></input></li>
+                            <li class="menu-controls"><a href="#" class="blue-button" onclick="getFileTypes();" style="text-decoration:none;">Apply</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="filter-selector-container" id="acc">
+                        <a href="#" onclick="showAccountType();" style="text-decoration:none;">
+                            <div id="account-selector" class="filter-selector"><div class="selector-icon all-icon"></div>
+                            <div class="selector-text">All Accounts</div>
+                            <div class="selector-arrow"></div>
+                            </div>
+                        </a>
+                        <div id="account-selector-menu" class="menu account-selector-menu" style="display: none; ">
+                          <div class="menu-top">&nbsp;</div>
+                            <ul>
+                                <li><div class="menu-icon all-icon"></div><a  style="text-decoration:none;">Any Accounts</a></li>
+                                <li><div class="menu-icon">  <apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/amazon_s3.jpg" height="15px" width="15px" alt="DropBox"  /></div><a  class="menu-text">S3</a><input class="float-right" type="checkbox" checked="true" disabled="disabled"></input></li>
+                               <!-- <li class="menu-controls"><a href="#" class="blue-button" style="text-decoration:none;">Apply</a></li>-->
+                            </ul>
+                        </div>
+                    </div>
+                 <!-- /filter selectors -->                  
+                </div>
+            </div>
+           
+            <div class="search-bar-wrapper">
+                <div class="search-bar">
+                    <input id="search-input" type="text" value="Search for any file" onclick="clearText();" class="selected"></input>
+                </div>
+            </div>
+          </div>
+    <script>
+        function clearText(){
+            $('#search-input').css('outline: none;');
+            $('#reset').hide();
+            $('#search').show();
+            $('#search-input').val('');
+        }
+        
+       function searchQuery(){
+           var searchText = $('#search-input').val();
+           $('#searchdata').text(searchText);
+           $('#search-input').val(searchText);
+           $('#reset').show();
+           $('#search').hide();
+           getSearchList(searchText);
+        }
+       function resetSearch(){
+           var searchText = '';
+           $('#searchdata').text(searchText);
+           $('#search-input').val(searchText );
+           $('#reset').hide();
+           $('#search').show();
+           getSearchList(searchText);
+        }
+       
+        $('#search-input').click(function() {
+            $('#search-input').css('outline: none;');
+            $('#unlinkMenu').hide();
+        });
+    
+    </script>
+     <apex:form id="fm" >
+     <apex:actionFunction action="{!doSyncCall}" name="doSync" reRender="fm" />
+     <apex:actionFunction name="getRecordList" action="{!RecordList}" reRender="fpg" oncomplete="hidepopup();">
+     <apex:param name="linkManType"  assignTo="{!linkManType}" value=""/>
+     </apex:actionFunction> 
+     <apex:actionFunction name="getRecordList2" action="{!RecordListTypeFilter}"  reRender="fpg" oncomplete="hidepopup();">
+     </apex:actionFunction> 
+    
+     <apex:actionFunction name="getSearchList" action="{!getSearchList}" reRender="fpg">
+          <apex:param name="searchdata"  assignTo="{!searchData}" value=""/>
+        </apex:actionFunction> 
+        <div>
+         <div id="copytoclip" style="display:none ">
+             <iframe id="contifm" src="" height="100%"  width="100%" frameborder="0" scrolling="no"/>
+         </div>
+         <apex:inputHidden id="box" value="{!url}" />
+         
+         <apex:outputPanel id="fpg">
+         <script>
+            $(document).ready(function(){
+                if({!showDocName} == true){
+                    $('div[id^=doctd]').show();
+                    $('div[id^=unlinktd]').hide();
+                    $('div[id^=contd]').hide();
+                    $('div[id^=alltd]').hide();
+                    $('th[id=thName]').text('Document Name');
+                }else if({!showConName} == true){
+                    $('div[id^=doctd]').hide();
+                    $('div[id^=unlinktd]').hide();
+                    $('div[id^=contd]').show();
+                    $('div[id^=alltd]').hide();
+                    $('th[id=thName]').text('Content Name');
+                }else if({!showFileName} == true){
+                    $('div[id^=doctd]').hide();
+                    $('div[id^=unlinktd]').show();
+                    $('div[id^=contd]').hide();
+                    $('div[id^=alltd]').hide();
+                    $('th[id=thName]').text('File Name');
+                }else{
+                    $('div[id^=doctd]').hide();
+                    $('div[id^=unlinktd]').hide();
+                    $('div[id^=contd]').hide();
+                    $('div[id^=alltd]').show();
+                }
+               
+                
+                $('#unlinkMenu').mouseleave(function() {
+                    $('#unlinkMenu').hide();
+                });
+            });
+       </script>
+       <div class="datagrid">
+         <table id="mainTable">
+            <thead><tr><th class="by-date">File Type</th><th class="by-name" id="thName">File Name</th><th class="created-date">Created Date</th><th class="created-by">Created By</th></tr></thead>
+          <tbody>
+           <apex:repeat var="i" value="{!intfcRecList}"  id="allfile">
+            <tr id="datatr{!i.intf.Id}" >
+            <td>
+              <a title="Unlink"> <apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/ed_unlink.gif" height="17px" width="17px" alt="Unlink" rendered="{!(i.intf.CEPXF__DocId__c == null && i.intf.CEPXF__ContentId__c == null)}" style="align:left;margin-right:2px;"/></a>
+              <a title="Document">  <apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/document.png" height="17px" width="17px" alt="Document" rendered="{!(i.intf.CEPXF__DocId__c != null && i.intf.CEPXF__DocDelStatus__c == false)}" style="align:left;margin-right:2px;"/></a>
+              <a title="Content">   <apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/content.jpg" height="17px" width="17px" alt="Content" rendered="{!(i.intf.CEPXF__ContentId__c != null && i.intf.CEPXF__ConDelStatus__c == false)}" style="align:left;margin-right:2px;"/></a>
+            </td>
+            
+          <td onmouseover="showOptions('{!i.intf.Id}');" onmouseout="hideOptions('{!i.intf.Id}');"> 
+             <apex:outputPanel id="Unlink" rendered="{!(i.intf.CEPXF__DocId__c == null && i.intf.CEPXF__ContentId__c == null)}">
+              <div class="by-name" id="unlinktd{!i.intf.Id}" >
+              <a title="S3"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/amazon_s3.jpg" height="17px" width="17px" alt="S3"  /></a>&nbsp;
+              <apex:outputLink id="lnk1" target="_blank" value="{!i.intf.CEPXF__Link__c}">{!i.intf.Name}</apex:outputLink>
+              <a id="unlinkpopArr{!i.intf.Id}" href="#" class="popup-arrow" style="display: none; " onclick="showUnlinkMenu('{!i.intf.Id}');"></a>
+              </div>
+            </apex:outputPanel>
+            <apex:outputPanel id="Doc" rendered="{!(i.intf.CEPXF__DocId__c != null && i.intf.CEPXF__DocDelStatus__c == false)}">
+             <div class="by-name" id="doctd{!i.intf.Id}">
+             <a title="S3"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/amazon_s3.jpg" height="17px" width="17px" alt="S3"  /></a>&nbsp;
+              <apex:outputLink id="lnk2" target="_blank" value="{!i.intf.CEPXF__Link__c}">{!i.intf.CEPXF__Document_Name__c}</apex:outputLink>
+             <a id="unlinkpopArr{!i.intf.Id}" href="#" class="popup-arrow" style="display: none; " onclick="showDocMenu('{!i.intf.Id}');" ></a>
+             </div>
+            </apex:outputPanel>
+            <apex:outputPanel id="Con" rendered="{!(i.intf.CEPXF__ContentId__c != null && i.intf.CEPXF__ConDelStatus__c == false)}">
+             <div class="by-name" id="contd{!i.intf.Id}">
+             <a title="S3"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/amazon_s3.jpg" height="17px" width="17px" alt="S3"  /></a>&nbsp;
+              <apex:outputLink id="lnk3" target="_blank" value="{!i.intf.CEPXF__Link__c}">{!i.intf.CEPXF__Content_Name__c}</apex:outputLink>
+             <a id="unlinkpopArr{!i.intf.Id}" href="#" class="popup-arrow" style="display: none; " onclick="showContentMenu('{!i.intf.Id}');"></a>
+             </div>
+            </apex:outputPanel>
+             
+            <apex:outputPanel id="All" rendered="{!(showFileName == false && showConName == false) && (showDocName==false)}">
+             <div class="by-name" id="alltd{!i.intf.Id}">
+             <a title="S3"><apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/amazon_s3.jpg" height="17px" width="17px" alt="S3"  /></a>&nbsp;
+              <apex:outputLink id="lnk4" target="_blank" value="{!i.intf.CEPXF__Link__c}">{!i.intf.Name}</apex:outputLink>
+              
+             <a id="unlinkpopArr{!i.intf.Id}" href="#" class="popup-arrow" style="display: none; " onclick="return showAllMenu('{!i.intf.Id}',{!(i.intf.CEPXF__DocId__c == null && i.intf.CEPXF__ContentId__c == null)},{!(i.intf.DocId__c != null && i.intf.ConDelStatus__c == false)},{!(i.intf.ContentId__c != null && i.intf.DocDelStatus__c == false)});" ></a>
+             </div>
+            </apex:outputPanel>
+            </td>
+            <td>{!i.intf.CreatedDate}</td>
+            <td><apex:outputLink id="lnk" value="/{!i.intf.CreatedBy.Id}" target="_blank" >{!i.intf.CreatedBy.Name}</apex:outputLink></td>
+            </tr>
+          </apex:repeat>
+         </tbody>
+        </table></div>
+       </apex:outputPanel>
+      <input id="recId" type="hidden" name="recId" value=""/>
+      <input id="filetypehid"  type="hidden" name="filetypehid" value=""/>  
+    </div>
+      
+      <!-- Dynamic menus.....................-->
+      <div class="context-submenu-cont context-menu" id="unlinkMenu" style="top: 180px; left: 600px; display: none; " >
+            <ul class="context-submenu">
+                <li id="docedit"><apex:commandLink value="Document Edit" style="width:100px;text-decoration:none;" action="{!documentEdit}" /> </li>
+                <li id="docdel"><apex:commandLink value="Document Delete" style=" width:100px;text-decoration:none; "  action="{!deleteDocInterface}" onclick="return confirmDelete();" /> </li>
+                <li id="del"><apex:commandLink value="Delete" style=" width:100px;text-decoration:none;" action="{!deleteDocInterface}" onclick="return confirmDelete();" /> </li>
+                <li id="rep"><a href="#" style=" width:110px;text-decoration:none;" onclick="openWin()">Document Replace</a></li>
+                <li id="conedit"><apex:commandLink value="Content Edit" style="width:100px;text-decoration:none;" action="{!contentEdit}" /> </li>
+                <li id="lnkDoc" ><apex:commandLink value="Link to Document" style=" width:110px;text-decoration:none;" action="{!sendtoDocument}" /> </li>
+                <li id="copyMe" ><a href="#" id="cont12" name="cont12" onclick="sendLinkToContent();"  style="width:110px;text-decoration:none;">Link to Content</a></li>
+            </ul>
+        </div> 
+       
+   </apex:form>  
+ </div> 
+     <script>
+        var nsPrefix='CEPXF__';
+        var selectedIntId ='';
+        function showUnlinkMenu(id){
+            changeMenuPosition(id,'unlinktd');
+            menuChange(id,'UnLinked') ;      
+            if($('#unlinkMenu:visible').length > 0){
+                $('#unlinkMenu').hide();
+            }
+            else{
+                $('#unlinkMenu').show();
+            }
+            $('input[name=recId]').val(id);
+            return false;
+        }
+        function showDocMenu(id){
+            changeMenuPosition(id,'doctd');
+            menuChange(id,'Document') ;
+            if($('#unlinkMenu:visible').length > 0){
+                $('#unlinkMenu').hide();
+            }
+            else{
+                $('#unlinkMenu').show();
+            }
+            $('input[name=recId]').val(id);
+            return false;
+        }
+        function showContentMenu(id){
+            changeMenuPosition(id,'contd');
+            menuChange(id,'Content') ;
+            if($('#unlinkMenu:visible').length > 0){
+                $('#unlinkMenu').hide();
+            }
+            else{
+                $('#unlinkMenu').show();
+            }
+            $('input[name=recId]').val(id);
+            return false;
+        }
+        function showAllMenu(id,Unlink,Doc,Con){
+            if(Unlink == true){
+                changeMenuPosition(id,'alltd');
+                menuChange(id,'UnLinked') ;
+            }
+            else if(Doc == true && Con == false){
+                changeMenuPosition(id,'alltd');
+                menuChange(id,'Document') ;
+            }
+            else if(Con == true && Doc == false){
+                changeMenuPosition(id,'alltd');
+                menuChange(id,'Content') ;
+            }
+            else if(Con == true && Doc == true){
+                changeMenuPosition(id,'alltd');
+                menuChange(id,'All') ;
+            }
+            if($('#unlinkMenu:visible').length > 0){
+                $('#unlinkMenu').hide();
+            }
+            else{
+                $('#unlinkMenu').show();
+            }
+            $('input[name=recId]').val(id);
+            return false;
+        }
+       
+        
+        function menuChange(id,docType){
+            selectedIntId = id;
+            queryResult = sforce.connection.query("SELECT Id, CEPXF__Link__c from CEPXF__Interface__c where Id ='"+selectedIntId+"'");
+            document.getElementById('pg:fm:box').value= queryResult.records["CEPXF__Link__c"];
+            if(docType == 'All'){
+                document.getElementById('conedit').style.display='block'; 
+                document.getElementById('docedit').style.display='block';
+                document.getElementById('rep').style.display='block';
+                document.getElementById('docdel').style.display='block';
+                document.getElementById('del').style.display='none';
+                document.getElementById('lnkDoc').style.display  = 'none'; 
+                document.getElementById('copyMe').style.display  = 'none';  
+            }
+            if(docType == 'Content'){
+                document.getElementById('docdel').style.display  = 'none';  
+                document.getElementById('del').style.display  = 'none';         
+                document.getElementById('conedit').style.display='block';  
+                document.getElementById('docedit').style.display  = 'none';       
+                document.getElementById('lnkDoc').style.display='block';  
+                document.getElementById('rep').style.display  = 'none';
+                document.getElementById('copyMe').style.display  = 'none';  
+            }            
+            if(docType == 'UnLinked'){
+                document.getElementById('del').style.display='block';
+                document.getElementById('lnkDoc').style.display='block';
+                document.getElementById('copyMe').style.display='block';
+                document.getElementById('docdel').style.display  = 'none';  
+                document.getElementById('conedit').style.display  = 'none';
+                document.getElementById('docedit').style.display  = 'none';
+                document.getElementById('rep').style.display  = 'none';
+            }
+            if(docType == 'Document'){
+                document.getElementById('docedit').style.display='block';
+                document.getElementById('conedit').style.display='none';
+                document.getElementById('lnkDoc').style.display  = 'none';                                 
+                document.getElementById('docdel').style.display='block';
+                document.getElementById('del').style.display  = 'none';  
+                document.getElementById('rep').style.display='block';
+                queryResult = sforce.connection.query("SELECT UserPermissionsSFContentUser from User where Id='{!$User.Id}' LIMIT 1");
+                if(queryResult.records["UserPermissionsSFContentUser"] == 'true'){
+                    document.getElementById('copyMe').style.visibility='visible'; 
+                }else
+                    document.getElementById("copyMe").style.display='none'; 
+            }   
+            
+        }
+     
+        function changeMenuPosition(id,divId){
+            var cellDiv=$("div[id="+divId+id+"]");
+            var menuDiv=$("div[id=unlinkMenu]");
+            if(cellDiv.position() != null){
+                var posLft=$(cellDiv).position().left+440;
+                var posTop=$(cellDiv).position().top+15;
+                $(menuDiv).css('left',posLft);
+                $(menuDiv).css('top',posTop);
+            }
+        }
+     
+        function showOptions(filename){
+            $('a[id=unlinkpopArr'+filename+']').show();
+            $('a[id=docpopArr'+filename+']').show();
+        }
+        function hideOptions(filename){
+            $('a[id=unlinkpopArr'+filename+']').hide();
+            $('a[id=docpopArr'+filename+']').hide();
+        }
+     </script>  
+             <script src="/soap/ajax/24.0/connection.js"></script>
+    </body>
+      <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.position.js"/>
+     <link rel="stylesheet" href="{!$Resource.ExtFMXfiles}/Jquery/development-bundle/themes/base/jquery.ui.all.css" />
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.core.js"/>
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.widget.js"/>
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.mouse.js"/>
+     <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/development-bundle/ui/jquery.ui.dialog.js"/> 
+</apex:page>

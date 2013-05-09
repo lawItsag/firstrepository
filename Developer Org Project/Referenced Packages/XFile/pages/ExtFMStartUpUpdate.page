@@ -1,0 +1,680 @@
+<apex:page controller="CEPXF.ExtFMStartUpController" sidebar="false"  id="pg" tabStyle="ExtFMStart_Here__tab" >
+    <style>
+        #container{
+            width : 1200px;
+        }
+        #maincontainer{
+            margin-top : 0px;
+            padding-left: 5%; 
+            width : 90%;
+        }   
+        .manage{
+            font-size:14;
+            font-weight:bold;
+        }
+        .ootbestyle3 {
+            font-size: 11.5px;
+            font-family: verdana, Arial, Helvetica, sans-serif;
+        }
+
+        .ootbestyle4 {font-size: 14px;
+            font-weight:bold;
+            font-family:verdana, Arial, Helvetica, sans-serif;
+        }
+        #iamstep1{
+            float:left;width:26%;padding-left:1.3%;border-right-width:1px;border-right-style:dotted;height:250px;
+        }
+        #iamstep2{
+            float:left;width:26%;padding-left:1.3%;border-right-width:1px;border-right-style:dotted;height:250px;
+        } 
+        #iamstep3{
+            float:left;width:44%;padding-left:1.3%;height:250px;
+        }
+        
+        #innSec1{float:left;width:45%;padding-left:2%;border-right-width:1px;border-right-style:dotted;height:170px;}
+        #innSec2{float:left;width:50%;padding-left:2%;height:170px;}
+    </style>
+   
+    <style type="text/css"> 
+        #leftside{width:25%; float:left;}
+        #content{width:100%;}
+        .right_content {width:75%;float: right;}  
+        .progress {padding:0; margin:0;background: #728FCE;}      
+        .right_content h1 {font-family: 'Lato', sans-serif;font-weight: 900;font-size: 35px;color: #BF3019;line-height: 120%;}
+        .progress li {float: left;display:block;width: 33.3%;background: #728FCE;color: #FFF;font-family: 'Open Sans', sans-serif;font-weight: 600;font-size: 14px;line-height: 110%;text-align: center;padding: 5px 0;margin:0;}    
+         #active1 {background:#4863A0}  
+         
+        .labeldisplay{padding-top: 10px;padding-bottom: 10px;width:30%;text-align:right;font-weight:bold;}
+        .labeldisplayBuck{padding-top: 10px;padding-bottom: 10px;width:20%;text-align:right;font-weight:bold;}
+        .dataColdisp{padding-top: 10px;padding-bottom:10px;
+            padding-right: 2px;
+            padding-left: 10px;
+            text-align: left;
+        }
+        .inputDatafield{width:30%; height:25px;background:#E6E7E8;border:0;} 
+        
+        .inputDataAccSetupfield{width:90%; height:25px;background:#E6E7E8;border:0;} 
+        .nextButton{height:30px; text-decoration:none;width:80px;border:0;}
+        .buttonClass{height:30px; width:80px;border:0;background: #728FCE;color: #FFF}
+        .inputDatafieldUserProfile{width:80%; height:25px;background:#E6E7E8;border:0;} 
+        
+    </style>
+   <style>
+        .css-treeview ul,
+        .css-treeview li{
+            padding: 5px;
+            margin: 0;
+            list-style: none;
+            font-size:12px;
+        }
+       .css-treeview input{
+            position: absolute;
+            opacity: 0;
+        }
+        .css-treeview{
+            font: normal 11px "Segoe UI", Arial, Sans-serif;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        .css-treeview a{
+            color: #00f;
+            text-decoration: none;
+        }
+        .css-treeview a:hover{
+            background:#EEEEEE;
+        }
+        .css-treeview input + label + ul{
+            margin: 0 0 0 22px;
+        }
+        .css-treeview input ~ ul{
+            display: none;
+        }
+        .css-treeview label,
+        .css-treeview label::before{
+            cursor: default;
+        }
+        .css-treeview input:disabled + label{
+            cursor: default;
+            opacity: .6;
+        }
+        .css-treeview input:checked:not(:disabled) ~ ul {
+            display: block;
+        }
+        .css-treeview label,
+        .css-treeview label::before{
+            background: url("icons.png") no-repeat;
+        }
+        .css-treeview label,
+        .css-treeview a,
+        .css-treeview label::before{
+            display: inline-block;
+            height: 16px;
+            line-height: 16px;,>
+            vertical-align: middle;
+        }
+        .css-treeview label{
+            background-position: 18px 0;
+        }
+        .css-treeview label::before{
+            content: "";
+            width: 16px;
+            margin: 0 22px 0 0;
+            vertical-align: middle;
+            background-position: 0 -32px;
+        }
+        .css-treeview input:checked + label::before{
+            background-position: 0 -16px;
+        }
+
+        /* webkit adjacent element selector bugfix */
+        @media screen and (-webkit-min-device-pixel-ratio:0)
+        {
+            .css-treeview 
+            {
+                -webkit-animation: webkit-adjacent-element-selector-bugfix infinite 1s;
+            }
+            @-webkit-keyframes webkit-adjacent-element-selector-bugfix 
+            {
+                from {
+                    padding: 0;
+                } 
+                to { 
+                    padding: 0;
+                }
+            }
+        }
+        
+         #dropbox{opacity:.5; cursor:default;}
+         #boxnet{opacity:.5; cursor:default;}
+         .listdefault{opacity:.5; cursor:default;}
+         .listhover{cursor:pointer;}
+        </style>
+        <style>
+           .shadow {
+                border: 1px solid #CCC;
+                -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
+                -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, .4);
+            }
+            .rounded {
+                -webkit-border-radius: 4px;
+                -moz-border-radius: 4px;
+                -o-border-radius: 4px;
+                -khtml-border-radius: 4px;
+             }
+            .psecHeader{
+                font-size:18px;
+                letter-spacing:2px;
+                padding-bottom:10px;
+                text-shadow: 1px 1px white, -1px -1px #666;
+             }
+        </style>
+   
+   
+     <script>
+        window.onload=setupPage;
+        var __sfdcSessionId='{!GETSESSIONID()}';
+        var queryResult;
+        var isFirstDisabled;
+        
+        function setupPage(){
+            var output = document.getElementById('output');
+            document.getElementById('navSec').style.display="none";
+           // document.getElementsByClassName("pbHelp")[0].innerHTML = "<span title='Application Information'><a href='javascript:openPopupFocusEscapePounds('{!$Resource.CEPXF__ExtFMXfiles}/Help/appInfo.html', 'Help', 700, 600, width=700,height=600,resizable=yes,toolbar=yes,status=no,scrollbars=yes,menubar=yes,directories=no,location=no,dependant=no, false, false);' class='linkCol'><span class='linkSpan'>Application Information </span><img src='/img/msg_icons/info16.png' width='12px;' height='12px;' alt='Application Information' title='Application Information'></a></span>";
+            try{
+                queryResult = sforce.connection.query("SELECT CEPXF__OverRideAuth__c,CEPXF__Bucket__c from CEPXF__Authorization__c where CEPXF__Account_Type__c='Amazon' LIMIT 1");
+                if(queryResult.size > 0){
+                   document.getElementById('accImg').src="/img/func_icons/util/checkmark16.gif";
+                   document.getElementById('bucImg').src="/img/func_icons/util/checkmark16.gif";
+                   if(queryResult.records["CEPXF__OverRideAuth__c"] == 'true'){
+                       document.getElementById('radio3').checked=true;
+                       document.getElementById('pg:pb:form1:orval').value=true;
+                    }else if(queryResult.records["CEPXF__OverRideAuth__c"] == 'false' && queryResult.records["CEPXF__Bucket__c"] !=null ){
+                        if(document.getElementById('radio2')){
+                            document.getElementById('radio2').checked=true;
+                        }
+                        document.getElementById('pg:pb:form1:orval').value=false;
+                    }else{
+                        if(document.getElementById('radio3'))
+                            document.getElementById('radio3').checked=true;
+                        document.getElementById('pg:pb:form1:orval').value=true;
+                    }  
+                    if(queryResult.records["CEPXF__Bucket__c"] != null){
+                        document.getElementById('bucImg').src="/img/func_icons/util/checkmark16.gif";
+                        if(document.getElementById('radio')){
+                           document.getElementById('radio').checked=true;
+                         }   
+                    }
+                    
+                }
+                }catch(error){
+                    queryFailed(error, output);
+                }
+                
+        }
+        
+        function queryFailed(error, out){
+               // out.innerHTML = "<p>You do not have the level of access necessary to perform the operation you requested. Please contact  your administrator if access is necessary.<p>";
+        }
+       
+        function checkIAMoveride(){
+            if(document.getElementById('radio2').checked){
+                document.getElementById('pg:pb:form1:orval').value=false;
+                document.getElementById('pg:pb:form1:iamNext').style.visibility="visible";
+                document.getElementById('pg:pb:form1:updt').style.visibility="hidden";
+                document.getElementById('iamcrd').style.display="block";
+            }else if(document.getElementById('radio3').checked){
+                document.getElementById('pg:pb:form1:orval').value=true;
+                document.getElementById('iamcrd').style.display="none";
+                document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                document.getElementById('pg:pb:form1:updt').style.visibility="visible";
+            }
+        }
+        
+       function showField(val){
+             if(val.value != null){
+                  var keyVal = document.getElementById('pg:pb:form1:multiKey').value;
+                  var secVal = document.getElementById('pg:pb:form1:multiSecret').value;
+                  if(keyVal != '' && secVal != ''){
+                     document.getElementById('pg:pb:form1:multiSave').style.display='block';
+                  }
+             }
+        }
+        
+       function callCreateBucket(){
+           document.getElementById('pg:pb:form1:createBtn').style.visibility='visible';
+       }
+       
+      function doShowSetup(){
+            document.getElementById('navSec').style.display="block";
+            document.getElementById('navList').style.visibility="visible";
+            document.getElementById('active1').style.background="#4863A0";
+            document.getElementById('active3').style.background="#728FCE";
+            document.getElementById('active2').style.background="#728FCE";
+            document.getElementById('pg:pb:form1:sec1').style.visibility="visible"; 
+            document.getElementById('pg:pb:form1:sec1').style.position="relative";
+            document.getElementById('pg:pb:form1:sec2').style.display="none";
+            document.getElementById('pg:pb:form1:sec4').style.display="none";
+            if(queryResult.size == 0){
+               if(document.getElementById('radio3'))
+                    document.getElementById('radio3').checked=true;
+                    document.getElementById('pg:pb:form1:orval').value=true;
+            }
+            
+            if(queryResult.size > 0){
+                if(queryResult.records["CEPXF__OverRideAuth__c"] == 'false' && queryResult.records["CEPXF__Bucket__c"] !=null ){
+                    document.getElementById('iamImg').src="/img/func_icons/util/checkmark16.gif";
+                    document.getElementById('iamcrd').style.textDecoration = "none";
+                }
+            }
+      }
+       
+       function showdownArrow(srcVal){
+           var imgUrl = srcVal.split('.com')[1];
+           if(imgUrl == '/img/arrowRight.gif')
+               document.getElementById('amImg').src="/img/leads_show_more_arrow.gif";
+           else
+               document.getElementById('amImg').src="/img/arrowRight.gif";
+       }
+       
+    </script>
+        <div id="maincontainer">
+        <div id ="welcome" style = "border: 1px; border-radius: 4px;" >
+          <apex:image value="{!$Resource.CEPXF__ExtFMXfiles}/img/Xfiles_banner.png" width="100%" height="80"/>  
+        </div> <br/> 
+        <div id="textcontainer">
+            <span class="ootbestyle3">
+             External File Management is a customized application tool which assist organizations to store the business required documents using an external file storage system and overcome the limitation of storage and filesize as defined by Salesforce.There is no limits to upload a file of high capacity using this application.Salesforce by standard confines the file size of upload as 5 MB for documents and 2GB for content.
+            </span>
+           <br/><br/>
+       </div>
+       <apex:pageBlock id="pb" title="Setup :" mode="edit"  helpTitle="Application Information"  helpUrl="{!$Resource.CEPXF__ExtFMXfiles}/Help/appInfo.html" >
+           <apex:form id="form1">
+              <script>
+                  function nextSecondClick(){
+                        document.getElementById('pg:pb:form1:sec2').style.visibility="hidden";
+                        document.getElementById('pg:pb:form1:sec2').style.position ="absolute";
+                        document.getElementById('pg:pb:form1:okBtn').style.visibility ="hidden";
+                        document.getElementById('active3').style.background="#4863A0"; 
+                        document.getElementById('active2').style.background="#728FCE";    
+                        if(document.getElementById('radio3').checked){
+                            document.getElementById('iamcrd').style.display="none";
+                            document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                        }else
+                            document.getElementById('iamcrd').style.display="block";
+                        document.getElementById('bucImg').src="/img/func_icons/util/checkmark16.gif";
+                        return false;
+                    }
+                    
+                    
+                    function onUserCredentialUpdate(){
+                        document.getElementById('pg:pb:form1:sec4').style.display="block";
+                        document.getElementById('usrImg').src="/img/func_icons/util/checkmark16.gif";
+                        
+                    }
+                    function finishCall(){
+                        document.getElementById('bucImg').src="/img/func_icons/util/checkmark16.gif";
+                        document.getElementById('pg:pb:form1:sec2').style.display="none";
+                        document.getElementById('active3').style.background="#4863A0";
+                        document.getElementById('active2').style.background="#728FCE";
+                        document.getElementById('pg:pb:form1:sec1').style.position="absolute";
+                        document.getElementById('pg:pb:form1:sec1').style.visibility="hidden";
+                        document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                        document.getElementById('iamcrd').style.textDecoration = "none";
+                        document.getElementById('pg:pb:form1:sec4').style.display="block";
+                        return false;
+                    }
+                    
+               </script>
+               <div id="output" style="color:red"></div>
+           
+                  <!----------------- Left Side content ----------------->
+                  <div id="content" >
+                       <div id="leftside">
+                             <div class="css-treeview">
+                                <ul>
+                                    <li onclick="doShowSetup();" ><input type="checkbox" id="item-0"  /><label for="item-0"><img  src="/img/arrowRight.gif" id="amImg" onclick="showdownArrow(this.src);" style="cursor: pointer;"/> <span style="cursor:pointer">Amazon S3</span></label>
+                                        <ul>
+                                            <li  id="accSec"><label for="item-0-0-0" ><img width="12px" id="accImg" src="/img/func_icons/remove12_on.gif"/>Account Setup</label></li>
+                                            <li  id="buklst"><label for="item-0-0-0" ><img width="12px" id="bucImg" src="/img/func_icons/remove12_on.gif"/>Bucket Setup</label></li>
+                                            <li  ><label for="item-0-0-0" id="iamcrd" style="text-decoration: line-through;"><img width="12px" id="iamImg" src="/img/func_icons/remove12_on.gif"/>IAM Setup</label></li>
+                                        </ul>
+                                    </li>
+                                   
+                                </ul>
+                            </div>
+                         </div>
+                         
+                         <div id="navSec" class="right_content" style="display:none"> 
+                            <ul class="progress" id="navList">
+                                <li class="orgAccess" id="active1" onclick="doShowAccountSection(this.innerText);" style="cursor: pointer;" >Account Setup</li>
+                                <li id="active2" onclick="doShowAccountSection(this.innerText);" style="cursor: pointer;">Bucket Setup</li>
+                                <li id="active3" onclick="doShowAccountSection(this.innerText);" style="cursor: pointer;">IAM Setup</li>
+                            </ul>
+                            <apex:outputPanel id="rightCnt" style="float:right;width:100%;padding-top:3%;">
+                                <script src="/soap/ajax/24.0/connection.js"></script>
+                                <script>
+                                  qrResult = sforce.connection.query("SELECT CEPXF__OverRideAuth__c,CEPXF__Bucket__c from CEPXF__Authorization__c where CEPXF__Account_Type__c='Amazon' LIMIT 1");
+                                  if(document.getElementById('pg:pb:form1:iamSec:multiuser')){
+                                        document.getElementById('pg:pb:form1:iamSec:multiuser').style.display='none';
+                                  }
+                                  if(qrResult.size > 0){
+                                        if(qrResult.records["CEPXF__Bucket__c"] != null){
+                                            if(document.getElementById('radio'))
+                                               document.getElementById('radio').checked=true;
+                                        }
+                                  }
+                                  
+                                 function nextClick(){
+                                     document.getElementById('pg:pb:form1:sec1').style.visibility="hidden";
+                                     document.getElementById('pg:pb:form1:sec1msg').style.display="none";
+                                     document.getElementById('pg:pb:form1:sec1').style.position ="absolute";
+                                     document.getElementById('active2').style.background="#4863A0"; 
+                                     document.getElementById('active1').style.background="#728FCE";    
+                                     document.getElementById('pg:pb:form1:sec2').style.display="block";
+                                     document.getElementById('accImg').src="/img/func_icons/util/checkmark16.gif";
+                                     return false;
+                                 }
+                                 function validateComplete(){
+                                     document.getElementById('accImg').src="/img/func_icons/util/checkmark16.gif";
+                                 }
+                                </script>
+                                <apex:outputPanel id="sec1" >
+                                    <script>
+                                    function doShowAccountSection(liVal){
+                                        var queryResultOver = sforce.connection.query("SELECT CEPXF__OverRideAuth__c, CEPXF__Bucket__c from CEPXF__Authorization__c where CEPXF__Account_Type__c='Amazon' LIMIT 1");
+                                        if(liVal == 'Account Setup'){
+                                             document.getElementById('navSec').style.display="block";
+                                             document.getElementById('navList').style.visibility="visible";
+                                             document.getElementById('active1').style.background="#4863A0";
+                                             document.getElementById('active3').style.background="#728FCE";
+                                             document.getElementById('active2').style.background="#728FCE";
+                                             document.getElementById('pg:pb:form1:sec1').style.visibility="visible"; 
+                                             document.getElementById('pg:pb:form1:sec1').style.position="relative";
+                                             document.getElementById('pg:pb:form1:sec2').style.display="none";
+                                             document.getElementById('pg:pb:form1:sec4').style.display="none";
+                                            
+                                        }else if(liVal == 'Bucket Setup' ){
+                                            if(queryResultOver.size > 0){
+                                                if(queryResultOver.records["CEPXF__Bucket__c"] != '' && queryResultOver.records["CEPXF__Bucket__c"] != null){
+                                                    document.getElementById('pg:pb:form1:sec1').style.visibility="hidden";
+                                                    document.getElementById('pg:pb:form1:sec1').style.position="absolute";
+                                                    document.getElementById('pg:pb:form1:sec2').style.display="block";
+                                                    if(document.getElementById('radio'))
+                                                        document.getElementById('radio').checked = true;
+                                                    if(queryResultOver.records["CEPXF__OverRideAuth__c"] == 'false'){
+                                                        document.getElementById('pg:pb:form1:updt').style.visibility="hidden";
+                                                        document.getElementById('pg:pb:form1:iamNext').style.visibility="visible";
+                                                    }else{
+                                                        document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                                                        document.getElementById('pg:pb:form1:updt').style.visibility="visible";
+                                                    }
+                                                    document.getElementById('pg:pb:form1:sec4').style.display="none";
+                                                    document.getElementById('active1').style.background="#728FCE";
+                                                    document.getElementById('active2').style.background="#4863A0";
+                                                    document.getElementById('active3').style.background="#728FCE";
+                                                }
+                                            }
+                                        }else if(liVal == 'IAM Setup' ){
+                                            if(queryResultOver.size > 0){
+                                                if(queryResultOver.records["CEPXF__OverRideAuth__c"] == 'false' && queryResultOver.records["CEPXF__Bucket__c"] != null){
+                                                    document.getElementById('pg:pb:form1:sec1').style.visibility="hidden";
+                                                    document.getElementById('pg:pb:form1:sec1').style.position="absolute";
+                                                    document.getElementById('pg:pb:form1:sec2').style.display="none";
+                                                    document.getElementById('pg:pb:form1:sec4').style.display="block";
+                                                    document.getElementById('active1').style.background="#728FCE";
+                                                    document.getElementById('active2').style.background="#728FCE";
+                                                    document.getElementById('active3').style.background="#4863A0";
+                                                }
+                                            }
+                                        }
+                                   }
+       
+                                    </script>
+                                    <apex:pagemessages id="sec1msg"></apex:pagemessages>
+                                    <div id="innSec1">
+                                    <apex:outputPanel id="amazon" >
+                                        <table class="detailList" cellspacing="0" cellpadding="0" border="0" >
+                                        <tr>
+                                            <td class="labeldisplay" >  
+                                            <apex:outputLabel for="AccountType" value="Account Type"></apex:outputLabel></td>
+                                            <td class="data2Col">
+                                            <apex:selectList id="AccountType" size="1" disabled="true" styleClass="inputDataAccSetupfield">
+                                            <apex:selectOption itemLabel="Amazon" itemValue="Amazon" />
+                                            </apex:selectList></td>
+                                        </tr><br/>
+                                        <tr>
+                                            <td class="labeldisplay">
+                                            <apex:outputLabel value="Access Key" for="key" ></apex:outputLabel></td>
+                                            <td class="data2Col" colspan="3">
+                                            <apex:inputText id="key" value="{!key}"  styleClass="inputDataAccSetupfield"  disabled="{!isEdited}" /><br/></td>
+                                        </tr><br/>
+                                        <tr>
+                                            <td class="labeldisplay" >
+                                            <apex:outputLabel value="Access Secret Key" for="secret" /></td>
+                                            <td class="data2Col" colspan="3">
+                                            <apex:inputSecret id="secret" value="{!secret}" styleClass="inputDataAccSetupfield" redisplay="true"  disabled="{!isEdited}">
+                                            </apex:inputSecret><br/></td>
+                                        </tr>
+                                        </table>
+                                    </apex:outputPanel><br/>
+                                    <apex:outputPanel id="butns1" style="padding-left:30%;padding-top:15px;">
+                                            <apex:commandButton value="Validate" action="{!login}" id="validate"  style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;" reRender="sec1" rendered="{!isValidated}"  oncomplete="validateComplete();"/>
+                                            <apex:commandButton value="Save" action="{!login}" id="valSave"  style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;" reRender="sec1" rendered="{!showSaveCan}"  oncomplete="validateComplete();"/>
+                                            <apex:commandButton value="Edit" action="{!doEdit}" id="edit" reRender="sec1" rendered="{!isEdited}"  style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;"  />
+                                            <apex:commandButton value="Cancel" action="{!doSaveCancel}" id="cancel"  style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;" reRender="sec1" rendered="{!showSaveCan}" />
+                                    </apex:outputPanel>
+                                    </div >
+                                    <div id="innSec2"><br/><br/>
+                                    <apex:outputPanel id="sec3" >
+                                        <script>
+                                          var qrResult = sforce.connection.query("SELECT CEPXF__OverRideAuth__c,CEPXF__Bucket__c from CEPXF__Authorization__c where CEPXF__Account_Type__c='Amazon' LIMIT 1");
+                                          if(qrResult.size > 0){
+                                            if(qrResult.records["CEPXF__OverRideAuth__c"] == 'true'){
+                                                if(document.getElementById('radio3')){
+                                                    document.getElementById('radio3').checked=true;
+                                                }
+                                            }else if(qrResult.records["CEPXF__Bucket__c"] == null || qrResult.records["CEPXF__Bucket__c"] == ''){
+                                                if(document.getElementById('radio3')){
+                                                    document.getElementById('radio3').checked=true;
+                                                }
+                                            }else if(qrResult.records["CEPXF__OverRideAuth__c"] == 'false' && qrResult.records["CEPXF__Bucket__c"] != ''){
+                                                if(document.getElementById('radio2')){
+                                                    document.getElementById('radio2').checked=true;
+                                                }
+                                            }   
+                                         }
+                                        </script>
+                                        <table class="detailList" cellspacing="0" cellpadding="0" border="0" >
+                                            <tr>
+                                                <td style="padding-left:10%;">
+                                                <b><input type="radio" id="radio3" name="radio1" value="overrideiam" onclick="checkIAMoveride()" >Override IAM authentication</input></b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-left:15%"><img src="/img/msg_icons/info16.png" height="10px" width="10px" />&nbsp;&nbsp;Less secure as it uses Amazon S3 account credentials for this organizations file management</td>
+                                            </tr>
+                                            <tr><!--<td ><em>Or :</em> </td> --></tr>
+                                            <tr>
+                                                <td  style="padding-left:10%;padding-top:20px;">
+                                                <b><input type="radio" id="radio2" name="radio1" value="setupiam" onclick="checkIAMoveride()"  >Setup IAM (Identity Access Management) - Recommended</input></b>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-left:15%"><img src="/img/msg_icons/info16.png" height="10px" width="10px"/>&nbsp;&nbsp;IAM ensures the file access are more secure and controlled</td>   
+                                            </tr>
+                                        </table>
+                                        <apex:inputHidden value="{!overrideAuth}" id="orval"/><br/>
+                                   </apex:outputPanel>
+                                   </div>
+                                   <apex:outputPanel id="butns" style="padding-left:70%; ">
+                                       <apex:commandButton value="Next" action="{!doSave}"  oncomplete="nextClick();" reRender="sec2" rendered="{!!isValidated}"  style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;"/>
+                                   </apex:outputPanel>
+                            </apex:outputPanel>
+                            <apex:outputPanel id="sec2" style="display:none">
+                                <script>
+                                   var qrResult = sforce.connection.query("SELECT CEPXF__OverRideAuth__c,CEPXF__Bucket__c from CEPXF__Authorization__c where CEPXF__Account_Type__c='Amazon' LIMIT 1");
+                                   if(qrResult.size > 0){
+                                        if(qrResult.records["CEPXF__Bucket__c"] != null){
+                                            if(document.getElementById('radio'))
+                                               document.getElementById('radio').checked=true;
+                                               
+                                            if(qrResult.records["CEPXF__OverRideAuth__c"] == 'true'){
+                                                    if(document.getElementById('pg:pb:form1:updt')){
+                                                        document.getElementById('pg:pb:form1:updt').style.visibility="visible";
+                                                    }
+                                                    if(document.getElementById('pg:pb:form1:iamNext')){
+                                                        document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                                                    }
+                                                }else if(qrResult.records["CEPXF__OverRideAuth__c"] == 'false'){
+                                                    if(document.getElementById('pg:pb:form1:updt')){
+                                                        document.getElementById('pg:pb:form1:updt').style.visibility="hidden";
+                                                    }
+                                                    if(document.getElementById('pg:pb:form1:iamNext')){
+                                                        document.getElementById('pg:pb:form1:iamNext').style.visibility="visible";
+                                                    }
+                                            }
+                                            if(document.getElementById('pg:pb:form1:cbuck')){
+                                                document.getElementById('pg:pb:form1:cbuck').disabled=true;
+                                            }
+                                        }
+                                    }
+                                    function checkBucket(){
+                                       if(document.getElementById('radio').checked){
+                                            document.getElementById('pg:pb:form1:cbuck').disabled=true;
+                                            document.getElementById('pg:pb:form1:sbuck').disabled=false;
+                                            if(qrResult.size > 0){
+                                                if(qrResult.records["CEPXF__OverRideAuth__c"] == 'true'){
+                                                    document.getElementById('pg:pb:form1:updt').style.visibility="visible";
+                                                    document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                                                }else if(qrResult.records["CEPXF__OverRideAuth__c"] == 'false'){
+                                                    document.getElementById('pg:pb:form1:updt').style.visibility="hidden";
+                                                    document.getElementById('pg:pb:form1:iamNext').style.visibility="visible";
+                                                }
+                                            }
+                                            document.getElementById('pg:pb:form1:createBtn').style.visibility ='hidden';
+                                            
+                                        }else if(document.getElementById('radio1').checked){
+                                           document.getElementById('pg:pb:form1:sbuck').disabled=true;
+                                           document.getElementById('pg:pb:form1:cbuck').disabled=false;
+                                           document.getElementById('pg:pb:form1:updt').style.visibility="hidden";
+                                           document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                                           if(document.getElementById('pg:pb:form1:cbuck').value != ''){
+                                               document.getElementById('pg:pb:form1:createBtn').style.visibility='visible';
+                                           }
+                                        }
+                                         
+                                    }
+                                    
+                                    function onCreateBucketFinish(){
+                                        document.getElementById('active2').style.background="#728FCE";
+                                        document.getElementById('pg:pb:form1:sec2').style.display="block";
+                                        if(qrResult.size > 0){
+                                            if(qrResult.records["CEPXF__OverRideAuth__c"] == 'true'){
+                                                document.getElementById('pg:pb:form1:updt').style.visibility="visible";
+                                                document.getElementById('pg:pb:form1:iamNext').style.visibility="hidden";
+                                            }else if(qrResult.records["CEPXF__OverRideAuth__c"] == 'false'){
+                                                if(document.getElementById('pg:pb:form1:updt'))
+                                                    document.getElementById('pg:pb:form1:updt').style.visibility="hidden";
+                                                
+                                                document.getElementById('pg:pb:form1:iamNext').style.visibility="visible";
+                                            }
+                                        }
+                                        return false;
+                                    }
+                                    
+                                </script>
+                                <apex:pagemessages ></apex:pagemessages>
+                                <apex:outputPanel id="buck">
+                                        <table class="detailList" cellspacing="0" cellpadding="0" border="0" >
+                                        <tr>
+                                            <td align="right" class="labeldisplayBuck">
+                                            <b><input type="radio" id="radio" name="radio" value="SelectBucket" onclick="checkBucket()" >Select Bucket</input></b>
+                                            </td><td class="data2Col" colspan="3">
+                                            <apex:selectList id="sbuck" value="{!selctedBuckName}" size="1" styleClass="inputDatafield" ><apex:selectOptions value="{!listBucket}"  />
+                                            </apex:selectList>
+                                            </td>
+                                        </tr>
+                                        <tr><td ><!--<em>Or :</em> --></td></tr> 
+                                        <tr >
+                                            <td align="right" class="labeldisplayBuck" >
+                                            <b><input type="radio" id="radio1" name="radio" value="CreateBucket" onclick="checkBucket()"  >Create Bucket</input></b>
+                                            </td>
+                                            <td class="data2Col" colspan="3">
+                                            <apex:inputText id="cbuck" value="{!createBuckectName}" styleClass="inputDatafield" onkeyup="callCreateBucket();"  />
+                                            </td>
+                                        </tr>
+                                        </table>
+                                    </apex:outputPanel><br/>
+                                    <apex:outputPanel id="butns12" style="padding-left:30%; padding-top:15px;">
+                                        <apex:commandButton id="createBtn" action="{!createBucket}" styleClass="buttonStyle" style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;visibility:hidden;" value="Create" reRender="sec2" oncomplete="onCreateBucketFinish();"/>
+                                        <apex:commandButton value="Finish" action="{!doSaveBucketInfo}" styleClass="buttonStyle" style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;visibility:hidden;" id="updt"  reRender="sec2" oncomplete="onCreateBucketFinish();" />
+                                        <apex:commandButton id="iamNext"  action="{!doSaveBucketInfo}" value="Next" style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;visibility:hidden;" reRender="sec4" oncomplete="finishCall();" />
+                                    </apex:outputPanel>
+                            </apex:outputPanel>
+                           <apex:outputPanel id="sec4" style="display:none">
+                               <div id="iamstep1">
+                                 <p class="psecHeader">IAM User Creation </p>
+                                 Create FREE IAM users in Amazon<br/><br/>
+                                 <div id="setupVedio" style="text-align:center">
+                                     <a href="http://youtu.be/36tFiruvx0s" target="_blank" style="display:block; color:#08C" >
+                                         <figure >
+                                              <img src="{!$Resource.ExtFMXfiles}/img/Iamsetup.png" class="shadow rounded" width="100px" height="60px" />
+                                         </figure> 
+                                     </a>
+                                     <p style="text-align:center"><a href="http://youtu.be/36tFiruvx0s" target="_blank">Watch the video</a></p>
+                                </div><br/>
+                                <apex:outputPanel >
+                                    <span class="ootbestyle3">
+                                        <div id="iamsetup">
+                                            <a href="https://console.aws.amazon.com/iam/home" target="_blank">CLICK HERE</a> for IAM user creation. <br/><br/>
+                                       </div>
+                                    </span>
+                                </apex:outputPanel>
+                             </div>
+                             <div id="iamstep2">
+                                 <p class="psecHeader">Bucket Permission </p>
+                                 Provide IAM user permission to access S3 bucket.<br/><br/>
+                                 <div id="userbucket" style="text-align:center">
+                                     <a href="http://youtu.be/p3fdd432ZLY" target="_blank" style="display:block; color:#08C" >
+                                         <figure>
+                                              <img src="{!$Resource.ExtFMXfiles}/img/IAM_User.png" class="shadow rounded" width="100px" height="60px" />
+                                         </figure>
+                                     </a>
+                                     <p style="text-align:center"><a href="http://youtu.be/p3fdd432ZLY" target="_blank">Watch the video</a></p>
+                                </div><br/>
+                                <a href="https://console.aws.amazon.com/iam/home" target="_blank">CLICK HERE</a> to go to Amazon.
+                             </div>
+                             <div id="iamstep3">
+                             <p class="psecHeader">Profile Updates({!usrCount})</p>
+                                <br/>
+                                <div id="iamShow" >
+                                <apex:outputPanel id="multiuser" >
+                                    <table class="detailList">
+                                        <tr><td align="right" class="labeldisplay" id="mselctUser" ><b><apex:outputLabel value="Select User :"  /></b></td>
+                                        <td class="data2Col" colspan="3"><apex:selectList id="multiSelect"  value="{!userSelected}" size="1"  styleClass="inputDatafieldUserProfile"  >
+                                            <apex:selectOptions value="{!Userlist}" />
+                                            <apex:actionSupport event="onchange" reRender="multiuser" action="{!doSelectedIAMUser}"/>
+                                        </apex:selectList></td>
+                                        </tr>
+                                        <tr><td align="right" class="labeldisplay" id="mkey" ><b><apex:outputLabel for="key" value="IAM Key :" /></b></td>
+                                        <td class="data2Col" colspan="3"><apex:inputText id="multiKey" value="{!iamKey}" onkeyup="showField(this)" styleClass="inputDatafieldUserProfile"/></td>
+                                        </tr>
+                                        <tr><td align="right" class="labeldisplay" id="msecret" ><b><apex:outputLabel for="key" value="IAM Secret :"/></b></td>
+                                        <td class="data2Col" colspan="3"><apex:inputText id="multiSecret"  value="{!iamsecret}" onkeyup="showField(this)"  styleClass="inputDatafieldUserProfile"/></td>
+                                        </tr>
+                                        <tr><td ></td><td class="data2Col" colspan="3"><font color="green"><apex:outputText value="{!result}" rendered="{!validated}" /></font></td></tr>
+                                        <tr><td ></td><td class="data2Col" colspan="3"><apex:commandButton id="multiSave" styleClass="buttonStyle" style="height:25px; width:80px;border:0;background: #4863A0;color: #FFF; font-size:12px; letter-spacing:1px;" value="Save" action="{!doUpdate}" reRender="sec4" oncomplete="onUserCredentialUpdate();" /></td></tr>
+                                    </table>
+                                </apex:outputPanel>
+                                </div>
+                             </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+          </apex:form>
+       </apex:pageBlock>
+   </div>
+   <script src="/soap/ajax/24.0/connection.js"></script>
+</apex:page>

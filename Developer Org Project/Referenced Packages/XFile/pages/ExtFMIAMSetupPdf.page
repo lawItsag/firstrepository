@@ -1,0 +1,36 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" renderAs="pdf">
+   <html>
+   <head>
+   <style>
+        .letterList{
+            list-style-type: lower-alpha;
+        }
+        
+        .letterListRoman{
+            list-style-type: lower-roman;
+        }
+    </style>
+   </head>
+   <body>
+   <ol class="letterList">
+     <li>Go to https://console.aws.amazon.com/iam/home</li>
+     <li>Login with your amazon credentials</li>
+     <li>After  successful login, you will see the below IAM Dashboard</li>
+     <li><img src="{!$Resource.ExtFMXfiles}/img/awsconsole.png" width="515px"/></li>
+     <li>Go to Users -- Create New users</li>
+     <li>You can create 5 users at one time. Provide your users salesforce email addresses</li>
+     <li><img src="{!$Resource.ExtFMXfiles}/img/createuser.png" width="515px" height="200px"/></li>
+     <li>Download credentials of the users.</li>
+     <li><img src="{!$Resource.ExtFMXfiles}/img/downloadcrd.png" width="515px" /></li>
+     <li>You will get the following details
+         <ol class="letterListRoman">
+             <li>User Name</li>
+             <li>Access key Id</li>
+             <li>Secret Access Key</li>
+         </ol>
+     </li>
+     <li>This information needs to be updated into the user profile of each salesforce users.</li>
+ </ol>
+ </body>
+ </html>
+</apex:page>

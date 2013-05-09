@@ -1,0 +1,36 @@
+<apex:page >
+	<apex:form >
+	    <apex:pageBlock >
+	    	<apex:pageBlockSection >
+	    		<apex:pageBlockSectionItem >
+	    			<apex:outputLabel value="Product Name"/>
+	    			<apex:inputText />
+	    		</apex:pageBlockSectionItem>
+	    		<apex:pageBlockSectionItem >
+	    			<apex:outputLabel value="Company"/>
+	    			<apex:inputText />
+	    		</apex:pageBlockSectionItem>
+	    		<apex:pageBlockSectionItem >
+	    			<apex:outputLabel value="Product Description"/>
+	    			<apex:inputText />
+	    		</apex:pageBlockSectionItem>
+	    		<apex:pageBlockSectionItem >
+	    			<apex:outputLabel value="Product Code"/>
+	    			<apex:inputText />
+	    		</apex:pageBlockSectionItem>
+	    		<apex:pageBlockSectionItem >
+	    			<apex:outputLabel value="IsActive"/>
+	    			 <apex:inputCheckbox />
+	    		</apex:pageBlockSectionItem>
+	    		<apex:pageBlockSectionItem >
+	    			<apex:outputLabel value="Product Type"/>
+	    			<apex:selectList id="type" size="1">
+						<apex:selectOption itemValue="Hardware" itemLabel="Hardware"/>
+						<apex:selectOption itemValue="Software" itemLabel="Software"/>
+						<apex:selectOption itemValue="HomeAppliances" itemLabel="HomeAppliances"/>
+					</apex:selectList>
+	    		</apex:pageBlockSectionItem>
+	    	</apex:pageBlockSection>	
+	    </apex:pageBlock>
+    </apex:form>
+</apex:page>

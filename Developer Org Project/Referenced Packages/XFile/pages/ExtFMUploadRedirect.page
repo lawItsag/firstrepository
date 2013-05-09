@@ -1,0 +1,24 @@
+<apex:page sidebar="false" controller="CEPXF.ExtFMUploadRedirectController"  id="pg" showHeader="false">
+     <apex:form id="fm">
+        <apex:actionFunction action="{!generateDocviewerUrl}" name="dogenerateUrl" reRender="fm">
+            <apex:param name="key" assignTo="{!key}" value=" "/>
+            <apex:param name="buck" assignTo="{!bucket}" value=" "/>
+            <apex:param name="etag" assignTo="{!etag}" value=" "/>
+            <apex:param name="linkConLocation" assignTo="{!linkConLocation}" value=" "/>
+            <apex:param name="linkDocLocation" assignTo="{!linkDocLocation}" value=" "/>
+        </apex:actionFunction>
+    </apex:form>
+    <apex:includeScript value="{!$Resource.CEPXF__ExtFMXfiles}/Jquery/js/jquery-1.5.1.min.js"/>
+    <script>
+      $(document).ready(function(){
+            var key = '{!JSENCODE($CurrentPage.parameters.key)}';
+            var bucket = '{!JSENCODE($CurrentPage.parameters.bucket)}';
+            var etag = '{!JSENCODE($CurrentPage.parameters.etag)}';
+            var linkConLocation = '{!JSENCODE($CurrentPage.parameters.linkConLocation)}';
+            var linkDocLocation = '{!JSENCODE($CurrentPage.parameters.linkDocLocation)}';
+            if(!{!isFirstTime}){
+                dogenerateUrl(key, bucket, etag, linkConLocation, linkDocLocation);
+            }
+      });
+   </script>
+</apex:page>
